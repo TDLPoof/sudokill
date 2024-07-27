@@ -1,11 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerWeapons : MonoBehaviour
 {
     public GameObject[] weapons;
     public GameObject[] icons;
+    public float solverKills, maxSolverKills;
+    public Slider solverBar;
+    public GameObject solver;
+    public ParticleSystem solverParticle;
+    public Color emptyColor, fullColor;
+    public TextMeshProUGUI solverText;
 
     // Start is called before the first frame update
     void Start()
@@ -31,5 +39,19 @@ public class PlayerWeapons : MonoBehaviour
             icons[0].SetActive(false);
             icons[1].SetActive(true);
         }
+
+        float solverScore = solverKills / maxSolverKills;
+        if (solverScore >= 1f)
+        {
+            solverText.color = fullColor;
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                solverParticle.Play();
+                solverKills = 0;
+                Instantiate(solver).SetActive(true);
+            }
+        }
+        else solverText.color = emptyColor;
+        solverBar.value = Mathf.Lerp(solverBar.value, solverScore, 0.2f);
     }
 }

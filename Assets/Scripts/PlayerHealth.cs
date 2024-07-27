@@ -12,7 +12,7 @@ public class PlayerHealth : MonoBehaviour
     public TextMeshProUGUI text;
 
     int slowValue = 100;
-    float invincibleTime = 0.5f;
+    float invincibleTime = 0.15f;
     float invTimer = 0;
 
     // Start is called before the first frame update
@@ -28,8 +28,7 @@ public class PlayerHealth : MonoBehaviour
         if (health > maxHealth) health = maxHealth;
 
         bar.value = Mathf.Lerp(bar.value, health, 0.33f);
-        slowValue = (int)Mathf.Round(Mathf.Lerp(slowValue, 10 * health, 0.33f));
-        text.text = "" + slowValue;
+        text.text = "" + Mathf.RoundToInt(health * 10);
         invTimer += Time.deltaTime;
     }
 
@@ -39,6 +38,13 @@ public class PlayerHealth : MonoBehaviour
         {
             invTimer = 0;
             health -= other.GetComponent<Hurtbox>().damage;
+            GetComponentInChildren<CameraVisuals>().DamageFlash();
+            if (health <= 0 && !GetComponentInChildren<DeathCamera>().activated)
+            {
+                GetComponentInChildren<DeathCamera>().Activate();
+                GetComponent<PlayerMovement>().enabled = false;
+                GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            }
         }
     }
 }

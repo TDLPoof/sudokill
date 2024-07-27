@@ -10,6 +10,8 @@ public class GroundedPathFinder : MonoBehaviour
     public float targetDistance = 1;
     public bool fallBackToTarget;
 
+    public float lookSpeed = -1;
+
     public Transform pathCheck, groundCheck;
     public float groundCheckDistance;
     public LayerMask validGround;
@@ -26,19 +28,6 @@ public class GroundedPathFinder : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         player = GameObject.Find("Player").transform;
-    }
-
-    Vector3 GetEndpoint(Vector3 start, float distance, float angle)
-    {
-        Vector3 straightDistance = new Vector3(distance, 0, 0);
-        straightDistance.x = distance * Mathf.Cos(angle);
-        straightDistance.y = distance * Mathf.Sin(angle);
-        return start + straightDistance;
-    }
-
-    public static float DistanceSQ(Vector3 p1, Vector3 p2)
-    {
-        return Mathf.Pow(p1.x - p2.x, 2) + Mathf.Pow(p1.y - p2.y, 2);
     }
 
     // Update is called once per frame
@@ -69,9 +58,23 @@ public class GroundedPathFinder : MonoBehaviour
                     }
                 }
             }*/
-            transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
-            if (DistanceSQ(transform.position, player.position) > targetDistance * targetDistance)
+
+            if (lookSpeed == -1) transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
+            else
+            {
+                EasingLookAt(player, lookSpeed * Time.deltaTime);
+            }
+            if (Utils.DistanceSQ(transform.position, player.position) > targetDistance * targetDistance)
                 rb.AddForce(transform.forward * speed/* * Time.deltaTime*/);
+            if (fallBackToTarget && Utils.DistanceSQ(transform.position, player.position) < (targetDistance - 1f) * (targetDistance - 1f))
+                rb.AddForce(transform.forward * speed * -0.75f);
+        }
+
+        void EasingLookAt(Transform target, float easing)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(target.position - transform.position);
+            print(targetRotation.eulerAngles);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, easing);
         }
     }
 }
