@@ -128,6 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   time: 5
+  scaleDown: 1
 --- !u!114 &2301202355477392315
 MonoBehaviour:
   m_ObjectHideFlags: 0
