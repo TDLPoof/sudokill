@@ -115,6 +115,8 @@ MonoBehaviour:
   damage: 1
   projectile: 1
   friendlyFire: 0
+  kbForce: 0
+  blocksAttacks: 0
   killsManager: {fileID: 0}
 --- !u!54 &1427668319511544952
 Rigidbody:
@@ -145,6 +147,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   time: 5
+  scaleDown: 0
+  removeOnContact: 1
 --- !u!1 &6625387309562006946
 GameObject:
   m_ObjectHideFlags: 0
